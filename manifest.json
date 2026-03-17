@@ -1,14 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "No Distractions - YouTube Focus",
-  "version": "1.0.0",
-  "description": "Remove distractions from YouTube to help you stay focused.",
+  "name": "No Distractions - Productivity Helper",
+  "version": "1.1.0",
+  "description": "Block distracting websites, add friction to bad habits, and stay focused.",
   "permissions": [
     "storage",
-    "alarms"
+    "alarms",
+    "scripting"
   ],
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "popup/popup.html",

@@ -301,6 +301,201 @@ input[type="password"] {
   color: #9CA3AF;
 }
 
+/* Blocked Sites page */
+.friction-password-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #333;
+  background: #fff;
+  outline: none;
+}
+
+.friction-password-input:focus {
+  border-color: #1a73e8;
+}
+
+.save-password-btn {
+  padding: 6px 14px;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.save-password-btn:hover {
+  background: #1557b0;
+}
+
+.add-site-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.site-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #333;
+  background: #fff;
+  outline: none;
+}
+
+.site-input:focus {
+  border-color: #1a73e8;
+}
+
+.add-site-btn {
+  padding: 6px 14px;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.add-site-btn:hover {
+  background: #1557b0;
+}
+
+.blocked-sites-list {
+  padding: 4px 0;
+}
+
+.blocked-site-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.blocked-site-item .site-domain {
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+}
+
+.blocked-site-item .remove-site-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: all 0.15s;
+}
+
+.blocked-site-item .remove-site-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* Quick-add grid */
+.quick-add-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.quick-add-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.quick-add-item:hover {
+  background: #f9fafb;
+}
+
+.quick-add-item.active {
+  background: #eff6ff;
+  border-color: #1a73e8;
+}
+
+.quick-add-item input {
+  display: none;
+}
+
+.quick-add-check {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.quick-add-item.active .quick-add-check {
+  background: #1a73e8;
+  border-color: #1a73e8;
+}
+
+.quick-add-item.active .quick-add-check::after {
+  content: '';
+  width: 6px;
+  height: 3px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg);
+  margin-bottom: 2px;
+}
+
+.quick-add-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Child lock hint */
+.child-lock-hint {
+  font-size: 11px;
+  color: #9CA3AF;
+  padding: 0 0 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.empty-state {
+  padding: 16px 0;
+  text-align: center;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.password-saved-msg {
+  font-size: 11px;
+  color: #10b981;
+  margin-left: 8px;
+}
+
 /* Locked state */
 .locked-overlay {
   position: fixed;

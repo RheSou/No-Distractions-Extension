@@ -19,6 +19,14 @@
         </div>
         <span>YouTube</span>
       </a>
+      <a href="#" class="nav-item" data-page="sites">
+        <div class="nav-icon sites-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="#6B7280">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+        </div>
+        <span>Sites</span>
+      </a>
       <a href="#" class="nav-item" data-page="settings">
         <div class="nav-icon settings-icon">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="#6B7280">
@@ -155,6 +163,41 @@
         </div>
       </div>
 
+      <!-- Blocked Sites Page -->
+      <div class="page" id="page-sites">
+        <div class="setting-section-title">Friction Password</div>
+        <div class="setting-row">
+          <span class="setting-label">Type to access blocked sites</span>
+        </div>
+        <div class="setting-row">
+          <input type="password" id="frictionPassword" placeholder="Set a password" class="friction-password-input">
+          <button id="saveFrictionPassword" class="save-password-btn">Save</button>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Require password to open extension</span>
+          <label class="toggle">
+            <input type="checkbox" id="childLockEnabled">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="child-lock-hint">Works as a child lock — password is needed to change any settings.</div>
+
+        <div class="setting-section-title">Quick Add</div>
+        <div class="quick-add-grid" id="quickAddGrid"></div>
+
+        <div class="setting-section-title">Add Custom Site</div>
+        <div class="add-site-row">
+          <input type="text" id="newSiteInput" placeholder="e.g. reddit.com" class="site-input">
+          <button id="addSiteBtn" class="add-site-btn">Add</button>
+        </div>
+
+        <div class="setting-section-title">Blocked Sites</div>
+        <div id="blockedSitesList" class="blocked-sites-list">
+          <div class="empty-state">No sites blocked yet. Add one above.</div>
+        </div>
+      </div>
+
       <!-- Settings Page -->
       <div class="page" id="page-settings">
         <div class="setting-row">
@@ -263,7 +306,7 @@
 
         <div class="setting-section-title">About</div>
         <div class="about-row">
-          <span class="about-text">No Distractions - YouTube Focus v1.0</span>
+          <span class="about-text">No Distractions - Productivity Helper v1.1</span>
         </div>
       </div>
     </main>
