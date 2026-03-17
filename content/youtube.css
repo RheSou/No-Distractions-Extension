@@ -1,0 +1,358 @@
+/* These classes are toggled dynamically by youtube.js based on settings */
+
+/* ============================================================
+   HIDE RECOMMENDATIONS - home page feed
+   ============================================================ */
+body.nd-hide-recommendations ytd-browse[page-subtype="home"] ytd-rich-grid-renderer,
+body.nd-hide-recommendations ytd-browse[page-subtype="home"] ytd-two-column-browse-results-renderer,
+body.nd-hide-recommendations ytd-browse[page-subtype="home"] #contents.ytd-rich-grid-renderer {
+  display: none !important;
+}
+
+/* ============================================================
+   HIDE BREAKING NEWS
+   ============================================================ */
+body.nd-hide-breaking-news ytd-rich-shelf-renderer[is-breaking-news],
+body.nd-hide-breaking-news ytd-shelf-renderer[is-breaking-news],
+body.nd-hide-breaking-news #breaking-news-shelf,
+body.nd-hide-breaking-news ytd-mini-guide-entry-renderer:has(a[title="News"]),
+body.nd-hide-breaking-news tp-yt-paper-item[title="News"] {
+  display: none !important;
+}
+
+/* ============================================================
+   HIDE SIDEBAR (watch page related videos)
+   ============================================================ */
+body.nd-hide-sidebar #secondary,
+body.nd-hide-sidebar #related,
+body.nd-hide-sidebar ytd-watch-next-secondary-results-renderer {
+  display: none !important;
+}
+
+body.nd-hide-sidebar #primary,
+body.nd-hide-sidebar ytd-watch-flexy #primary-inner {
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+body.nd-hide-sidebar ytd-watch-flexy {
+  --ytd-watch-flexy-panel-max-height: none !important;
+}
+
+/* ============================================================
+   HIDE COMMENTS
+   ============================================================ */
+body.nd-hide-comments #comments,
+body.nd-hide-comments ytd-comments,
+body.nd-hide-comments ytd-item-section-renderer#sections {
+  display: none !important;
+}
+
+/* ============================================================
+   BLUR THUMBNAILS
+   YouTube uses yt-thumbnail-view-model with img.ytCoreImageHost
+   and legacy ytd-thumbnail - cover both patterns
+   ============================================================ */
+
+/* New YouTube lockup components */
+body.nd-blur-thumbnails yt-thumbnail-view-model,
+body.nd-blur-thumbnails .yt-lockup-view-model__content-image,
+/* Legacy components (search results, sidebar, etc.) */
+body.nd-blur-thumbnails ytd-thumbnail,
+body.nd-blur-thumbnails ytd-playlist-thumbnail,
+body.nd-blur-thumbnails ytd-rich-grid-media #thumbnail,
+body.nd-blur-thumbnails ytd-compact-video-renderer #thumbnail,
+body.nd-blur-thumbnails ytd-grid-video-renderer #thumbnail,
+body.nd-blur-thumbnails ytd-video-renderer #thumbnail,
+body.nd-blur-thumbnails ytd-rich-item-renderer #thumbnail {
+  filter: blur(25px) !important;
+  overflow: hidden !important;
+}
+
+/* ============================================================
+   HIDE THUMBNAILS
+   ============================================================ */
+
+/* New YouTube lockup components */
+body.nd-hide-thumbnails yt-thumbnail-view-model,
+body.nd-hide-thumbnails .yt-lockup-view-model__content-image,
+/* Legacy components */
+body.nd-hide-thumbnails ytd-thumbnail,
+body.nd-hide-thumbnails ytd-playlist-thumbnail,
+body.nd-hide-thumbnails ytd-rich-grid-media #thumbnail,
+body.nd-hide-thumbnails ytd-compact-video-renderer #thumbnail,
+body.nd-hide-thumbnails ytd-grid-video-renderer #thumbnail,
+body.nd-hide-thumbnails ytd-video-renderer #thumbnail,
+body.nd-hide-thumbnails ytd-rich-item-renderer #thumbnail {
+  visibility: hidden !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ============================================================
+   HIDE UP NEXT / AUTOPLAY SUGGESTIONS
+   ============================================================ */
+body.nd-hide-upnext .ytp-suggestion-set,
+body.nd-hide-upnext .ytp-endscreen-content,
+body.nd-hide-upnext .ytp-ce-element,
+body.nd-hide-upnext .ytp-ce-covering-overlay,
+body.nd-hide-upnext .ytp-ce-element-shadow,
+body.nd-hide-upnext .ytp-ce-covering-image,
+body.nd-hide-upnext .ytp-ce-expanding-image,
+body.nd-hide-upnext .ytp-ce-video,
+body.nd-hide-upnext ytd-compact-autoplay-renderer,
+body.nd-hide-upnext .ytp-autonav-endscreen-upnext-container,
+body.nd-hide-upnext .ytp-endscreen-content,
+body.nd-hide-upnext .videowall-endscreen,
+body.nd-hide-upnext .html5-endscreen {
+  display: none !important;
+}
+
+/* Hide the autoplay toggle switch itself */
+body.nd-hide-upnext .ytp-autonav-toggle-button-container,
+body.nd-hide-upnext ytd-compact-autoplay-renderer {
+  display: none !important;
+}
+
+/* ============================================================
+   HIDE SHORTS
+   ============================================================ */
+body.nd-hide-shorts ytd-reel-shelf-renderer,
+body.nd-hide-shorts ytd-rich-shelf-renderer[is-shorts],
+body.nd-hide-shorts [is-shorts],
+body.nd-hide-shorts ytd-mini-guide-entry-renderer:has(a[title="Shorts"]),
+body.nd-hide-shorts tp-yt-paper-item[title="Shorts"],
+body.nd-hide-shorts ytd-guide-entry-renderer a[title="Shorts"],
+body.nd-hide-shorts ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+body.nd-hide-shorts ytd-reel-shelf-renderer,
+body.nd-hide-shorts ytd-shorts,
+body.nd-hide-shorts [page-subtype="shorts"] {
+  display: none !important;
+}
+
+/* Shorts tab in channel pages */
+body.nd-hide-shorts yt-tab-shape[tab-title="Shorts"],
+body.nd-hide-shorts tp-yt-paper-tab:has(> div[title="Shorts"]) {
+  display: none !important;
+}
+
+/* Shorts in search results */
+body.nd-hide-shorts ytd-video-renderer:has(a[href*="/shorts/"]),
+body.nd-hide-shorts ytd-rich-item-renderer:has(a[href*="/shorts/"]) {
+  display: none !important;
+}
+
+/* Shorts shelf on home/subscriptions */
+body.nd-hide-shorts ytd-rich-section-renderer:has([is-shorts]),
+body.nd-hide-shorts ytd-shelf-renderer:has(a[href*="/shorts/"]) {
+  display: none !important;
+}
+
+/* ============================================================
+   HIDE TRENDING/EXPLORE
+   ============================================================ */
+body.nd-hide-trending ytd-mini-guide-entry-renderer:has(a[title="Explore"]),
+body.nd-hide-trending ytd-mini-guide-entry-renderer:has(a[title="Trending"]),
+body.nd-hide-trending tp-yt-paper-item[title="Trending"],
+body.nd-hide-trending tp-yt-paper-item[title="Explore"],
+body.nd-hide-trending ytd-guide-entry-renderer a[title="Trending"],
+body.nd-hide-trending ytd-guide-entry-renderer a[title="Explore"] {
+  display: none !important;
+}
+
+/* ============================================================
+   REMOVE COLORS (GRAYSCALE)
+   Apply to page-manager instead of body to avoid creating a
+   stacking context that breaks fixed-position sidebar/mini-guide
+   ============================================================ */
+body.nd-grayscale #page-manager,
+body.nd-grayscale ytd-page-manager {
+  filter: grayscale(100%) !important;
+}
+
+/* Also grayscale the masthead (top bar) */
+body.nd-grayscale #masthead-container,
+body.nd-grayscale ytd-masthead {
+  filter: grayscale(100%) !important;
+}
+
+/* Exempt the video player from grayscale if watching */
+body.nd-grayscale .html5-video-player {
+  filter: grayscale(0%) !important;
+}
+
+/* ============================================================
+   HIDE END CARDS / ANNOTATIONS
+   ============================================================ */
+body.nd-hide-endcards .ytp-ce-element,
+body.nd-hide-endcards .ytp-ce-covering-overlay,
+body.nd-hide-endcards .ytp-ce-element-shadow,
+body.nd-hide-endcards .ytp-ce-covering-image,
+body.nd-hide-endcards .ytp-ce-expanding-image,
+body.nd-hide-endcards .ytp-cards-button,
+body.nd-hide-endcards .ytp-cards-teaser,
+body.nd-hide-endcards .ytp-ce-video,
+body.nd-hide-endcards .annotation,
+body.nd-hide-endcards .iv-branding,
+body.nd-hide-endcards iv-promo-contents {
+  display: none !important;
+}
+
+/* ============================================================
+   HIDE NOTIFICATION BADGE
+   ============================================================ */
+body.nd-hide-notifications .yt-spec-icon-badge-shape--type-notification,
+body.nd-hide-notifications .notification-count,
+body.nd-hide-notifications ytd-notification-topbar-button-renderer .yt-spec-icon-badge-shape__badge,
+body.nd-hide-notifications #notification-count {
+  display: none !important;
+}
+
+/* ============================================================
+   HIDE LIVE CHAT
+   ============================================================ */
+body.nd-hide-chat #chat-container,
+body.nd-hide-chat #chat,
+body.nd-hide-chat ytd-live-chat-frame {
+  display: none !important;
+}
+
+/* ============================================================
+   HIDE VIEW/LIKE COUNTS (minimize social proof)
+   ============================================================ */
+
+/* Like/dislike button text (the "11K" number inside the like button) */
+body.nd-hide-counts segmented-like-dislike-button-view-model .yt-spec-button-shape-next__button-text-content {
+  display: none !important;
+}
+
+/* View count on watch page - the #info-container holds views + date */
+body.nd-hide-counts ytd-watch-info-text #info-container #view-count,
+body.nd-hide-counts ytd-watch-info-text #info-container #info .style-scope.yt-formatted-string:first-child {
+  display: none !important;
+}
+
+/* The combined "400K views  3 months ago" span - hide the views part */
+body.nd-hide-counts ytd-watch-info-text #info > span:first-child {
+  display: none !important;
+}
+/* Hide the separator between views and date */
+body.nd-hide-counts ytd-watch-info-text #info > span:nth-child(2) {
+  display: none !important;
+}
+
+/* View count in video metadata on feed/search (e.g. "72K views") */
+/* New lockup components - the first metadata-row has channel, second has "views • time ago" */
+body.nd-hide-counts .yt-content-metadata-view-model__metadata-row:last-child > span:first-child,
+body.nd-hide-counts .yt-content-metadata-view-model__metadata-row:last-child > .yt-content-metadata-view-model__delimiter:first-of-type {
+  display: none !important;
+}
+/* Legacy components */
+body.nd-hide-counts ytd-video-meta-block #metadata-line > span:first-child,
+body.nd-hide-counts ytd-grid-video-renderer #metadata-line > span:first-child {
+  display: none !important;
+}
+
+/* Like count shown in aria-label won't be visible, but hide the button text */
+body.nd-hide-counts like-button-view-model .yt-spec-button-shape-next__button-text-content {
+  display: none !important;
+}
+
+/* Subscriber count on channel */
+body.nd-hide-counts #subscriber-count,
+body.nd-hide-counts #owner-sub-count {
+  display: none !important;
+}
+
+/* ============================================================
+   BLOCK YOUTUBE - full page overlay
+   ============================================================ */
+body.nd-blocked #content,
+body.nd-blocked ytd-app {
+  display: none !important;
+}
+
+body.nd-blocked::after {
+  content: "YouTube is blocked by No Distractions";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f8f9fa;
+  color: #333;
+  font-size: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  z-index: 999999;
+}
+
+/* ============================================================
+   WATCH TIME REMINDER BANNER
+   ============================================================ */
+#nd-time-reminder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #ff6b35, #f7c948);
+  color: #1a1a1a;
+  text-align: center;
+  padding: 10px 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+#nd-time-reminder button {
+  background: rgba(0,0,0,0.15);
+  border: none;
+  color: #1a1a1a;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#nd-time-reminder button:hover {
+  background: rgba(0,0,0,0.25);
+}
+
+/* ============================================================
+   DAILY LIMIT REACHED OVERLAY
+   ============================================================ */
+#nd-daily-limit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#nd-daily-limit-overlay h1 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+#nd-daily-limit-overlay p {
+  font-size: 16px;
+  color: #6B7280;
+}

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No Distractions</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <a href="#" class="nav-item active" data-page="youtube">
+        <div class="nav-icon youtube-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <rect x="2" y="4" width="20" height="16" rx="4" fill="#FF0000"/>
+            <polygon points="10,8 16,12 10,16" fill="white"/>
+          </svg>
+        </div>
+        <span>YouTube</span>
+      </a>
+      <a href="#" class="nav-item" data-page="settings">
+        <div class="nav-icon settings-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="#6B7280">
+            <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64L19.43 12.97z"/>
+          </svg>
+        </div>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+      <!-- YouTube Page -->
+      <div class="page active" id="page-youtube">
+        <div class="setting-row">
+          <span class="setting-label">Block YouTube</span>
+          <label class="toggle">
+            <input type="checkbox" id="blockYoutube">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Recommendations</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideRecommendations">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Force redirect to subscriptions</span>
+          <label class="toggle">
+            <input type="checkbox" id="forceSubscriptions">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Breaking News</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideBreakingNews">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Sidebar</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideSidebar">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Comments</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideComments">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Blur/Hide Thumbnails</span>
+          <div class="btn-group">
+            <button class="btn-option active" data-value="show" id="thumbShow">Show</button>
+            <button class="btn-option" data-value="blur" id="thumbBlur">Blur</button>
+            <button class="btn-option" data-value="hide" id="thumbHide">Hide</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Up Next / Disable Autoplay</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideUpNext">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Shorts</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideShorts">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Trending/Explore</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideTrending">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide End Cards/Annotations</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideEndCards">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Notification Badge</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideNotifications">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide Live Chat</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideChat">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Hide View/Like Counts</span>
+          <label class="toggle">
+            <input type="checkbox" id="hideCounts">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Remove Colors (Grayscale)</span>
+          <label class="toggle">
+            <input type="checkbox" id="removeColors">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Settings Page -->
+      <div class="page" id="page-settings">
+        <div class="setting-row">
+          <span class="setting-label">Pause for</span>
+          <div class="pause-controls">
+            <select id="pauseDuration">
+              <option value="5">5 minutes</option>
+              <option value="15">15 minutes</option>
+              <option value="30">30 minutes</option>
+              <option value="60">1 hour</option>
+              <option value="120">2 hours</option>
+            </select>
+            <label class="toggle">
+              <input type="checkbox" id="pauseEnabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Pause during</span>
+          <div class="schedule-controls">
+            <input type="time" id="scheduleFrom" value="09:00">
+            <span>to</span>
+            <input type="time" id="scheduleUntil" value="17:00">
+            <label class="toggle">
+              <input type="checkbox" id="scheduleEnabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Pause on</span>
+          <div class="days-row">
+            <label class="day-check"><input type="checkbox" id="daySun" value="0"><span>S</span></label>
+            <label class="day-check"><input type="checkbox" id="dayMon" value="1"><span>M</span></label>
+            <label class="day-check"><input type="checkbox" id="dayTue" value="2"><span>T</span></label>
+            <label class="day-check"><input type="checkbox" id="dayWed" value="3"><span>W</span></label>
+            <label class="day-check"><input type="checkbox" id="dayThu" value="4"><span>T</span></label>
+            <label class="day-check"><input type="checkbox" id="dayFri" value="5"><span>F</span></label>
+            <label class="day-check"><input type="checkbox" id="daySat" value="6"><span>S</span></label>
+          </div>
+        </div>
+
+        <div class="setting-section-title">Limits</div>
+
+        <div class="setting-row">
+          <span class="setting-label">Watch time reminder</span>
+          <div class="pause-controls">
+            <select id="watchTimeMinutes">
+              <option value="15">15 min</option>
+              <option value="30">30 min</option>
+              <option value="45">45 min</option>
+              <option value="60">1 hour</option>
+              <option value="120">2 hours</option>
+            </select>
+            <label class="toggle">
+              <input type="checkbox" id="watchTimeReminder">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Daily time limit</span>
+          <div class="pause-controls">
+            <select id="dailyLimitMinutes">
+              <option value="15">15 min</option>
+              <option value="30">30 min</option>
+              <option value="60">1 hour</option>
+              <option value="120">2 hours</option>
+              <option value="180">3 hours</option>
+            </select>
+            <label class="toggle">
+              <input type="checkbox" id="dailyLimitEnabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-section-title">Advanced</div>
+
+        <div class="setting-row">
+          <span class="setting-label">Redirect to</span>
+          <div class="redirect-controls">
+            <input type="url" id="redirectUrl" placeholder="https://example.com">
+            <label class="toggle">
+              <input type="checkbox" id="redirectEnabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Lock Settings</span>
+          <div class="lock-controls">
+            <input type="password" id="lockPassword" placeholder="Create password">
+            <button id="lockBtn" class="lock-btn" title="Lock settings">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="#6B7280">
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3-9H9V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-section-title">About</div>
+        <div class="about-row">
+          <span class="about-text">No Distractions - YouTube Focus v1.0</span>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

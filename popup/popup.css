@@ -1,0 +1,340 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 420px;
+  min-height: 400px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  color: #333;
+  background: #fff;
+}
+
+.container {
+  display: flex;
+  min-height: 400px;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 72px;
+  background: #f8f9fa;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  text-decoration: none;
+  color: #6B7280;
+  font-size: 10px;
+  border-left: 3px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.nav-item:hover {
+  background: #e5e7eb;
+}
+
+.nav-item.active {
+  color: #1a73e8;
+  border-left-color: #1a73e8;
+  background: #e8f0fe;
+}
+
+.nav-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 12px 16px;
+  overflow-y: auto;
+  max-height: 520px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* Setting rows */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.setting-label {
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.2s;
+  border-radius: 22px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.toggle input:checked + .slider {
+  background-color: #1a73e8;
+}
+
+.toggle input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* Button group (thumbnails) */
+.btn-group {
+  display: flex;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.btn-option {
+  padding: 4px 12px;
+  border: none;
+  background: #fff;
+  color: #6B7280;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-right: 1px solid #d1d5db;
+}
+
+.btn-option:last-child {
+  border-right: none;
+}
+
+.btn-option.active {
+  background: #1a73e8;
+  color: #fff;
+}
+
+.btn-option:hover:not(.active) {
+  background: #f3f4f6;
+}
+
+/* Settings page specific */
+.pause-controls,
+.schedule-controls,
+.redirect-controls,
+.lock-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+select,
+input[type="time"],
+input[type="url"],
+input[type="password"] {
+  padding: 5px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #333;
+  background: #fff;
+  outline: none;
+}
+
+select:focus,
+input:focus {
+  border-color: #1a73e8;
+}
+
+select {
+  width: 110px;
+}
+
+input[type="time"] {
+  width: 90px;
+}
+
+input[type="url"] {
+  width: 160px;
+}
+
+input[type="password"] {
+  width: 140px;
+}
+
+.schedule-controls span {
+  color: #6B7280;
+  font-size: 12px;
+}
+
+/* Days row */
+.days-row {
+  display: flex;
+  gap: 4px;
+}
+
+.day-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-check input {
+  display: none;
+}
+
+.day-check span {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6B7280;
+  background: #f3f4f6;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.day-check input:checked + span {
+  background: #1a73e8;
+  color: #fff;
+}
+
+.day-check span:hover {
+  background: #e5e7eb;
+}
+
+.day-check input:checked + span:hover {
+  background: #1557b0;
+}
+
+/* Lock button */
+.lock-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.lock-btn:hover {
+  background: #f3f4f6;
+}
+
+/* About section */
+.setting-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.about-row {
+  padding: 8px 0;
+}
+
+.about-text {
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Locked state */
+.locked-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  gap: 12px;
+}
+
+.locked-overlay input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.locked-overlay button {
+  padding: 8px 24px;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.locked-overlay .lock-icon {
+  font-size: 32px;
+}
