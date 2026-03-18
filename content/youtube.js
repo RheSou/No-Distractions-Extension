@@ -125,6 +125,17 @@ function handleSubscriptionRedirect() {
 }
 
 // ============================================================
+// TIME FORMATTING HELPER
+// ============================================================
+function formatTime(mins) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h === 0) return `${m} minute${m !== 1 ? 's' : ''}`;
+  if (m === 0) return `${h} hour${h !== 1 ? 's' : ''}`;
+  return `${h} hour${h !== 1 ? 's' : ''} ${m} min`;
+}
+
+// ============================================================
 // WATCH TIME REMINDER
 // Shows a banner after X minutes of continuous YouTube use
 // ============================================================
@@ -158,7 +169,7 @@ function showReminder(mins) {
   const banner = document.createElement('div');
   banner.id = 'nd-time-reminder';
   banner.innerHTML = `
-    <span>You've been on YouTube for ${mins} minutes. Time for a break?</span>
+    <span>You've been on YouTube for ${formatTime(mins)}. Time for a break?</span>
     <button id="nd-reminder-dismiss">Dismiss</button>
   `;
   document.body.prepend(banner);
@@ -227,7 +238,7 @@ function showDailyLimitOverlay(limitMins) {
   overlay.id = 'nd-daily-limit-overlay';
   overlay.innerHTML = `
     <h1>Daily Limit Reached</h1>
-    <p>You've used your ${limitMins}-minute daily YouTube allowance.</p>
+    <p>You've used your ${formatTime(limitMins)} daily YouTube allowance.</p>
     <p style="margin-top: 8px; font-size: 14px; color: #9CA3AF;">Come back tomorrow, or adjust in the extension settings.</p>
   `;
   document.body.appendChild(overlay);

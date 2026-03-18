@@ -254,7 +254,14 @@
               <option value="45">45 min</option>
               <option value="60">1 hour</option>
               <option value="120">2 hours</option>
+              <option value="180">3 hours</option>
+              <option value="240">4 hours</option>
+              <option value="custom">Custom</option>
             </select>
+            <div class="custom-time-input" id="watchTimeCustom" style="display:none;">
+              <input type="number" id="watchTimeHours" min="0" max="23" placeholder="0" class="time-num-input"> h
+              <input type="number" id="watchTimeCustomMinutes" min="0" max="59" placeholder="0" class="time-num-input"> m
+            </div>
             <label class="toggle">
               <input type="checkbox" id="watchTimeReminder">
               <span class="slider"></span>
@@ -271,7 +278,15 @@
               <option value="60">1 hour</option>
               <option value="120">2 hours</option>
               <option value="180">3 hours</option>
+              <option value="240">4 hours</option>
+              <option value="360">6 hours</option>
+              <option value="480">8 hours</option>
+              <option value="custom">Custom</option>
             </select>
+            <div class="custom-time-input" id="dailyLimitCustom" style="display:none;">
+              <input type="number" id="dailyLimitHours" min="0" max="23" placeholder="0" class="time-num-input"> h
+              <input type="number" id="dailyLimitCustomMinutes" min="0" max="59" placeholder="0" class="time-num-input"> m
+            </div>
             <label class="toggle">
               <input type="checkbox" id="dailyLimitEnabled">
               <span class="slider"></span>
@@ -306,7 +321,7 @@
 
         <div class="setting-section-title">About</div>
         <div class="about-row">
-          <span class="about-text">No Distractions - Productivity Helper v1.1</span>
+          <span class="about-text" id="aboutVersion">No Distractions - Productivity Helper</span>
         </div>
       </div>
     </main>

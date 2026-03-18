@@ -44,6 +44,11 @@ async function loadSettings() {
   const stored = await chrome.storage.sync.get(DEFAULTS);
   settings = { ...DEFAULTS, ...stored };
   applySettingsToUI();
+
+  // Show version from manifest
+  const manifest = chrome.runtime.getManifest();
+  document.getElementById('aboutVersion').textContent =
+    `No Distractions - Productivity Helper v${manifest.version}`;
 }
 
 // Save a specific setting
@@ -99,9 +104,30 @@ function applySettingsToUI() {
   document.getElementById('redirectEnabled').checked = settings.redirectEnabled;
   document.getElementById('redirectUrl').value = settings.redirectUrl || '';
   document.getElementById('watchTimeReminder').checked = settings.watchTimeReminder;
-  document.getElementById('watchTimeMinutes').value = settings.watchTimeMinutes;
+  const watchSelect = document.getElementById('watchTimeMinutes');
+  const watchPresets = ['15', '30', '45', '60', '120', '180', '240'];
+  if (watchPresets.includes(String(settings.watchTimeMinutes))) {
+    watchSelect.value = settings.watchTimeMinutes;
+    document.getElementById('watchTimeCustom').style.display = 'none';
+  } else {
+    watchSelect.value = 'custom';
+    document.getElementById('watchTimeCustom').style.display = 'flex';
+    document.getElementById('watchTimeHours').value = Math.floor(settings.watchTimeMinutes / 60);
+    document.getElementById('watchTimeCustomMinutes').value = settings.watchTimeMinutes % 60;
+  }
+
   document.getElementById('dailyLimitEnabled').checked = settings.dailyLimitEnabled;
-  document.getElementById('dailyLimitMinutes').value = settings.dailyLimitMinutes;
+  const dailySelect = document.getElementById('dailyLimitMinutes');
+  const dailyPresets = ['15', '30', '60', '120', '180', '240', '360', '480'];
+  if (dailyPresets.includes(String(settings.dailyLimitMinutes))) {
+    dailySelect.value = settings.dailyLimitMinutes;
+    document.getElementById('dailyLimitCustom').style.display = 'none';
+  } else {
+    dailySelect.value = 'custom';
+    document.getElementById('dailyLimitCustom').style.display = 'flex';
+    document.getElementById('dailyLimitHours').value = Math.floor(settings.dailyLimitMinutes / 60);
+    document.getElementById('dailyLimitCustomMinutes').value = settings.dailyLimitMinutes % 60;
+  }
 
   // Days
   const days = settings.pauseDays || [];
@@ -208,8 +234,25 @@ document.getElementById('watchTimeReminder').addEventListener('change', (e) => {
 });
 
 document.getElementById('watchTimeMinutes').addEventListener('change', (e) => {
-  saveSetting('watchTimeMinutes', parseInt(e.target.value));
+  if (e.target.value === 'custom') {
+    document.getElementById('watchTimeCustom').style.display = 'flex';
+  } else {
+    document.getElementById('watchTimeCustom').style.display = 'none';
+    saveSetting('watchTimeMinutes', parseInt(e.target.value));
+  }
 });
+
+function saveCustomWatchTime() {
+  const h = parseInt(document.getElementById('watchTimeHours').value) || 0;
+  const m = parseInt(document.getElementById('watchTimeCustomMinutes').value) || 0;
+  const total = h * 60 + m;
+  if (total > 0) {
+    saveSetting('watchTimeMinutes', total);
+  }
+}
+
+document.getElementById('watchTimeHours').addEventListener('input', saveCustomWatchTime);
+document.getElementById('watchTimeCustomMinutes').addEventListener('input', saveCustomWatchTime);
 
 // Daily limit
 document.getElementById('dailyLimitEnabled').addEventListener('change', (e) => {
@@ -217,8 +260,25 @@ document.getElementById('dailyLimitEnabled').addEventListener('change', (e) => {
 });
 
 document.getElementById('dailyLimitMinutes').addEventListener('change', (e) => {
-  saveSetting('dailyLimitMinutes', parseInt(e.target.value));
+  if (e.target.value === 'custom') {
+    document.getElementById('dailyLimitCustom').style.display = 'flex';
+  } else {
+    document.getElementById('dailyLimitCustom').style.display = 'none';
+    saveSetting('dailyLimitMinutes', parseInt(e.target.value));
+  }
 });
+
+function saveCustomDailyLimit() {
+  const h = parseInt(document.getElementById('dailyLimitHours').value) || 0;
+  const m = parseInt(document.getElementById('dailyLimitCustomMinutes').value) || 0;
+  const total = h * 60 + m;
+  if (total > 0) {
+    saveSetting('dailyLimitMinutes', total);
+  }
+}
+
+document.getElementById('dailyLimitHours').addEventListener('input', saveCustomDailyLimit);
+document.getElementById('dailyLimitCustomMinutes').addEventListener('input', saveCustomDailyLimit);
 
 document.getElementById('redirectEnabled').addEventListener('change', (e) => {
   saveSetting('redirectEnabled', e.target.checked);
