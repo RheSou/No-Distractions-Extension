@@ -13,6 +13,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     // Track unlocked sites per tab so we don't re-gate after SPA navigation
     if (sender.tab) {
       unlockedTabs.add(sender.tab.id);
+      gatedTabs.delete(sender.tab.id);
     }
   }
 });
@@ -20,9 +21,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 // Track tabs that have been unlocked (user typed the password)
 const unlockedTabs = new Set();
 
+// Track tabs that already have a gate injected (prevents multiple injections per load)
+const gatedTabs = new Set();
+
 // Clean up when tabs close
 chrome.tabs.onRemoved.addListener((tabId) => {
   unlockedTabs.delete(tabId);
+  gatedTabs.delete(tabId);
 });
 
 // When pause alarm fires, disable pause
@@ -43,7 +48,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
   // Check custom blocked sites first (before YouTube-specific logic)
   const blockedSites = settings.blockedSites || [];
-  if (blockedSites.length > 0 && !unlockedTabs.has(tabId)) {
+  if (blockedSites.length > 0) {
     try {
       const url = new URL(tab.url);
       const hostname = url.hostname.replace(/^www\./, '');
@@ -52,6 +57,12 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       });
 
       if (isBlocked) {
+        // Skip if already unlocked or already gated
+        if (unlockedTabs.has(tabId) || gatedTabs.has(tabId)) return;
+
+        // Mark as gated before injecting to prevent duplicate injections
+        gatedTabs.add(tabId);
+
         // Inject the site gate overlay
         try {
           await chrome.scripting.executeScript({
@@ -59,9 +70,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
             files: ['content/site-gate.js']
           });
         } catch (e) {
-          // Script injection can fail on some pages (chrome://, etc.) - ignore
+          // Script injection can fail on some pages (chrome://, etc.) - remove gated state
+          gatedTabs.delete(tabId);
         }
         return;
+      } else {
+        // Navigated to a non-blocked site — clear gated/unlocked state
+        gatedTabs.delete(tabId);
+        unlockedTabs.delete(tabId);
       }
     } catch (e) {
       // Invalid URL - ignore
@@ -91,10 +107,11 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 });
 
-// Clear unlock state when navigating to a different domain
-chrome.webNavigation?.onBeforeNavigate?.addListener((details) => {
+// Reset gated/unlocked state when navigating to a new page
+chrome.webNavigation?.onCommitted?.addListener((details) => {
   if (details.frameId !== 0) return; // Only main frame
-  // We reset unlock when the tab navigates - the gate will re-check
+  // Clear gated state so the gate can be re-injected on the new page
+  gatedTabs.delete(details.tabId);
 });
 
 function isPaused(settings) {
