@@ -57,6 +57,9 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       });
 
       if (isBlocked) {
+        // Don't gate if paused
+        if (isPaused(settings)) return;
+
         // Skip if already unlocked or already gated
         if (unlockedTabs.has(tabId) || gatedTabs.has(tabId)) return;
 
@@ -115,24 +118,29 @@ chrome.webNavigation?.onCommitted?.addListener((details) => {
 });
 
 function isPaused(settings) {
+  // Manual pause always wins
   if (settings.pauseEnabled) return true;
 
+  const now = new Date();
+  const day = now.getDay();
+  const pauseDays = settings.pauseDays || [];
+  const hasPauseDays = pauseDays.length > 0;
+  const isTodayPauseDay = pauseDays.includes(day);
+
+  // If specific days are selected but today isn't one of them, not paused
+  if (hasPauseDays && !isTodayPauseDay) return false;
+
+  // Today is a pause day with no time schedule — pause all day
+  if (hasPauseDays && !settings.scheduleEnabled) return true;
+
+  // Time schedule enabled — check if current time is within the window
   if (settings.scheduleEnabled) {
-    const now = new Date();
-    const day = now.getDay();
-    const pauseDays = settings.pauseDays || [];
-
-    if (pauseDays.length === 0 || pauseDays.includes(day)) {
-      const timeNow = now.getHours() * 60 + now.getMinutes();
-      const [fromH, fromM] = (settings.scheduleFrom || '09:00').split(':').map(Number);
-      const [untilH, untilM] = (settings.scheduleUntil || '17:00').split(':').map(Number);
-      const fromMins = fromH * 60 + fromM;
-      const untilMins = untilH * 60 + untilM;
-
-      if (timeNow >= fromMins && timeNow < untilMins) {
-        return true;
-      }
-    }
+    const timeNow = now.getHours() * 60 + now.getMinutes();
+    const [fromH, fromM] = (settings.scheduleFrom || '09:00').split(':').map(Number);
+    const [untilH, untilM] = (settings.scheduleUntil || '17:00').split(':').map(Number);
+    const fromMins = fromH * 60 + fromM;
+    const untilMins = untilH * 60 + untilM;
+    return timeNow >= fromMins && timeNow < untilMins;
   }
 
   return false;
