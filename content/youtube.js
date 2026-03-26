@@ -211,15 +211,21 @@ function handleDailyLimit(settings) {
     }
 
     // Increment watch time every minute
+    // Uses a shared lastTick timestamp to prevent multiple tabs from double-counting
     if (!window._ndDailyInterval) {
       window._ndDailyInterval = setInterval(() => {
-        chrome.storage.local.get(['dailyWatchTime', 'dailyWatchDate'], (d) => {
+        chrome.storage.local.get(['dailyWatchTime', 'dailyWatchDate', 'dailyWatchLastTick'], (d) => {
           const now = new Date().toDateString();
+          const nowMs = Date.now();
+
+          // Skip if another tab already counted this minute
+          if (d.dailyWatchLastTick && (nowMs - d.dailyWatchLastTick) < 55000) return;
+
           let time = 0;
           if (d.dailyWatchDate === now) {
             time = (d.dailyWatchTime || 0) + 1;
           }
-          chrome.storage.local.set({ dailyWatchTime: time, dailyWatchDate: now });
+          chrome.storage.local.set({ dailyWatchTime: time, dailyWatchDate: now, dailyWatchLastTick: nowMs });
 
           if (currentSettings.dailyLimitEnabled && time >= currentSettings.dailyLimitMinutes) {
             showDailyLimitOverlay(currentSettings.dailyLimitMinutes);
