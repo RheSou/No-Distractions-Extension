@@ -57,6 +57,9 @@ function applySettings(settings) {
 
   // Daily time limit
   handleDailyLimit(settings);
+
+  // Sleep timer (fade volume, then pause)
+  handleSleepTimer(settings);
 }
 
 // ============================================================
@@ -251,6 +254,76 @@ function showDailyLimitOverlay(limitMins) {
 }
 
 // ============================================================
+// SLEEP TIMER
+// Gradually fade YouTube video volume to silent over a fade
+// window, hold silent for an optional period, then pause.
+// ============================================================
+let sleepTimerInterval = null;
+let sleepTimerSessionId = 0;   // tracks which timer session the base volume corresponds to
+let sleepBaseVolume = 1;
+
+function handleSleepTimer(settings) {
+  const enabled = !!settings.sleepTimerEnabled;
+  const startedAt = settings.sleepTimerStartedAt || 0;
+
+  if (!enabled || !startedAt) {
+    if (sleepTimerInterval) {
+      clearInterval(sleepTimerInterval);
+      sleepTimerInterval = null;
+    }
+    sleepTimerSessionId = 0;
+    return;
+  }
+
+  // New timer session — capture current volume so the fade starts from the
+  // user's current level rather than jumping to max.
+  if (sleepTimerSessionId !== startedAt) {
+    sleepTimerSessionId = startedAt;
+    const v = document.querySelector('video');
+    sleepBaseVolume = v ? (v.volume > 0 ? v.volume : 1) : 1;
+  }
+
+  tickSleepTimer();
+
+  if (!sleepTimerInterval) {
+    sleepTimerInterval = setInterval(tickSleepTimer, 1000);
+  }
+}
+
+function tickSleepTimer() {
+  if (!currentSettings.sleepTimerEnabled || !currentSettings.sleepTimerStartedAt) {
+    clearInterval(sleepTimerInterval);
+    sleepTimerInterval = null;
+    return;
+  }
+
+  const fadeMs = (parseInt(currentSettings.sleepFadeMinutes) || 0) * 60000;
+  const silentMs = (parseInt(currentSettings.sleepSilentMinutes) || 0) * 60000;
+  const elapsed = Date.now() - currentSettings.sleepTimerStartedAt;
+  const video = document.querySelector('video');
+
+  if (elapsed < fadeMs) {
+    // Fading phase
+    const factor = Math.max(0, 1 - elapsed / fadeMs);
+    if (video) video.volume = Math.max(0, Math.min(1, sleepBaseVolume * factor));
+  } else if (elapsed < fadeMs + silentMs) {
+    // Silent phase
+    if (video) video.volume = 0;
+  } else {
+    // Timer finished — pause and disable
+    if (video) {
+      video.volume = 0;
+      try { video.pause(); } catch (e) {}
+    }
+    clearInterval(sleepTimerInterval);
+    sleepTimerInterval = null;
+    currentSettings.sleepTimerEnabled = false;
+    currentSettings.sleepTimerStartedAt = 0;
+    chrome.storage.sync.set({ sleepTimerEnabled: false, sleepTimerStartedAt: 0 });
+  }
+}
+
+// ============================================================
 // PAUSE CHECK
 // ============================================================
 function isPaused(settings) {
@@ -290,6 +363,11 @@ function clearAllEffects() {
   removeReminder();
   const limitOverlay = document.getElementById('nd-daily-limit-overlay');
   if (limitOverlay) limitOverlay.remove();
+  if (sleepTimerInterval) {
+    clearInterval(sleepTimerInterval);
+    sleepTimerInterval = null;
+  }
+  sleepTimerSessionId = 0;
 }
 
 // ============================================================

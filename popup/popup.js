@@ -34,7 +34,12 @@ const DEFAULTS = {
   redirectEnabled: false,
   redirectUrl: '',
   lockPassword: '',
-  isLocked: false
+  isLocked: false,
+  // Sleep timer
+  sleepTimerEnabled: false,
+  sleepFadeMinutes: 120,
+  sleepSilentMinutes: 0,
+  sleepTimerStartedAt: 0
 };
 
 let settings = { ...DEFAULTS };
@@ -128,6 +133,32 @@ function applySettingsToUI() {
     document.getElementById('dailyLimitHours').value = Math.floor(settings.dailyLimitMinutes / 60);
     document.getElementById('dailyLimitCustomMinutes').value = settings.dailyLimitMinutes % 60;
   }
+
+  // Sleep timer
+  document.getElementById('sleepTimerEnabled').checked = !!settings.sleepTimerEnabled;
+  const sleepFadeSelect = document.getElementById('sleepFadeMinutes');
+  const sleepFadePresets = ['15', '30', '45', '60', '90', '120'];
+  if (sleepFadePresets.includes(String(settings.sleepFadeMinutes))) {
+    sleepFadeSelect.value = settings.sleepFadeMinutes;
+    document.getElementById('sleepFadeCustom').style.display = 'none';
+  } else {
+    sleepFadeSelect.value = 'custom';
+    document.getElementById('sleepFadeCustom').style.display = 'flex';
+    document.getElementById('sleepFadeHours').value = Math.floor(settings.sleepFadeMinutes / 60);
+    document.getElementById('sleepFadeCustomMinutes').value = settings.sleepFadeMinutes % 60;
+  }
+  const sleepSilentSelect = document.getElementById('sleepSilentMinutes');
+  const sleepSilentPresets = ['0', '5', '15', '30', '60'];
+  if (sleepSilentPresets.includes(String(settings.sleepSilentMinutes))) {
+    sleepSilentSelect.value = settings.sleepSilentMinutes;
+    document.getElementById('sleepSilentCustom').style.display = 'none';
+  } else {
+    sleepSilentSelect.value = 'custom';
+    document.getElementById('sleepSilentCustom').style.display = 'flex';
+    document.getElementById('sleepSilentHours').value = Math.floor(settings.sleepSilentMinutes / 60);
+    document.getElementById('sleepSilentCustomMinutes').value = settings.sleepSilentMinutes % 60;
+  }
+  updateSleepTimerStatus();
 
   // Days
   const days = settings.pauseDays || [];
@@ -279,6 +310,122 @@ function saveCustomDailyLimit() {
 
 document.getElementById('dailyLimitHours').addEventListener('input', saveCustomDailyLimit);
 document.getElementById('dailyLimitCustomMinutes').addEventListener('input', saveCustomDailyLimit);
+
+// Sleep timer
+document.getElementById('sleepTimerEnabled').addEventListener('change', (e) => {
+  if (e.target.checked) {
+    const fade = Math.max(0, parseInt(settings.sleepFadeMinutes) || 0);
+    const silent = Math.max(0, parseInt(settings.sleepSilentMinutes) || 0);
+    if (fade + silent <= 0) {
+      e.target.checked = false;
+      return;
+    }
+    saveSetting('sleepTimerStartedAt', Date.now());
+    saveSetting('sleepTimerEnabled', true);
+  } else {
+    saveSetting('sleepTimerEnabled', false);
+    saveSetting('sleepTimerStartedAt', 0);
+  }
+  updateSleepTimerStatus();
+});
+
+document.getElementById('sleepFadeMinutes').addEventListener('change', (e) => {
+  if (e.target.value === 'custom') {
+    document.getElementById('sleepFadeCustom').style.display = 'flex';
+  } else {
+    document.getElementById('sleepFadeCustom').style.display = 'none';
+    saveSetting('sleepFadeMinutes', parseInt(e.target.value));
+  }
+});
+
+function saveCustomSleepFade() {
+  const h = parseInt(document.getElementById('sleepFadeHours').value) || 0;
+  const m = parseInt(document.getElementById('sleepFadeCustomMinutes').value) || 0;
+  const total = h * 60 + m;
+  if (total > 0) {
+    saveSetting('sleepFadeMinutes', total);
+  }
+}
+document.getElementById('sleepFadeHours').addEventListener('input', saveCustomSleepFade);
+document.getElementById('sleepFadeCustomMinutes').addEventListener('input', saveCustomSleepFade);
+
+document.getElementById('sleepSilentMinutes').addEventListener('change', (e) => {
+  if (e.target.value === 'custom') {
+    document.getElementById('sleepSilentCustom').style.display = 'flex';
+  } else {
+    document.getElementById('sleepSilentCustom').style.display = 'none';
+    saveSetting('sleepSilentMinutes', parseInt(e.target.value));
+  }
+});
+
+function saveCustomSleepSilent() {
+  const h = parseInt(document.getElementById('sleepSilentHours').value) || 0;
+  const m = parseInt(document.getElementById('sleepSilentCustomMinutes').value) || 0;
+  const total = h * 60 + m;
+  saveSetting('sleepSilentMinutes', total);
+}
+document.getElementById('sleepSilentHours').addEventListener('input', saveCustomSleepSilent);
+document.getElementById('sleepSilentCustomMinutes').addEventListener('input', saveCustomSleepSilent);
+
+let sleepStatusInterval = null;
+function updateSleepTimerStatus() {
+  const statusEl = document.getElementById('sleepTimerStatus');
+  if (!statusEl) return;
+
+  if (sleepStatusInterval) {
+    clearInterval(sleepStatusInterval);
+    sleepStatusInterval = null;
+  }
+
+  const render = () => {
+    if (!settings.sleepTimerEnabled || !settings.sleepTimerStartedAt) {
+      statusEl.textContent = '';
+      return false;
+    }
+    const fadeMs = (parseInt(settings.sleepFadeMinutes) || 0) * 60000;
+    const silentMs = (parseInt(settings.sleepSilentMinutes) || 0) * 60000;
+    const elapsed = Date.now() - settings.sleepTimerStartedAt;
+    const remaining = fadeMs + silentMs - elapsed;
+    if (remaining <= 0) {
+      statusEl.textContent = '';
+      return false;
+    }
+    const totalSec = Math.ceil(remaining / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    statusEl.textContent = h > 0
+      ? `${h}h ${m}m left`
+      : (m > 0 ? `${m}m ${s}s left` : `${s}s left`);
+    return true;
+  };
+
+  if (render()) {
+    sleepStatusInterval = setInterval(() => {
+      if (!render()) {
+        clearInterval(sleepStatusInterval);
+        sleepStatusInterval = null;
+      }
+    }, 1000);
+  }
+}
+
+// Listen for storage changes (e.g. when content script clears the timer)
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'sync') return;
+  let touched = false;
+  for (const key of ['sleepTimerEnabled', 'sleepTimerStartedAt', 'sleepFadeMinutes', 'sleepSilentMinutes']) {
+    if (changes[key]) {
+      settings[key] = changes[key].newValue;
+      touched = true;
+    }
+  }
+  if (touched) {
+    const toggle = document.getElementById('sleepTimerEnabled');
+    if (toggle) toggle.checked = !!settings.sleepTimerEnabled;
+    updateSleepTimerStatus();
+  }
+});
 
 document.getElementById('redirectEnabled').addEventListener('change', (e) => {
   saveSetting('redirectEnabled', e.target.checked);

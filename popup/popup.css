@@ -514,6 +514,22 @@ input[type="password"] {
   border-bottom: 1px solid #f0f0f0;
 }
 
+/* Sleep timer */
+.sleep-timer-hint {
+  font-size: 11px;
+  color: #9CA3AF;
+  padding: 0 0 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sleep-timer-status {
+  font-size: 11px;
+  color: #1a73e8;
+  font-weight: 500;
+  min-width: 0;
+  white-space: nowrap;
+}
+
 .empty-state {
   padding: 16px 0;
   text-align: center;

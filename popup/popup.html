@@ -294,6 +294,57 @@
           </div>
         </div>
 
+        <div class="setting-section-title">Sleep Timer</div>
+
+        <div class="setting-row">
+          <span class="setting-label">Fade to silent over</span>
+          <div class="pause-controls">
+            <select id="sleepFadeMinutes">
+              <option value="15">15 min</option>
+              <option value="30">30 min</option>
+              <option value="45">45 min</option>
+              <option value="60">1 hour</option>
+              <option value="90">1.5 hours</option>
+              <option value="120" selected>2 hours</option>
+              <option value="custom">Custom</option>
+            </select>
+            <div class="custom-time-input" id="sleepFadeCustom" style="display:none;">
+              <input type="number" id="sleepFadeHours" min="0" max="23" placeholder="0" class="time-num-input"> h
+              <input type="number" id="sleepFadeCustomMinutes" min="0" max="59" placeholder="0" class="time-num-input"> m
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Stay silent for</span>
+          <div class="pause-controls">
+            <select id="sleepSilentMinutes">
+              <option value="0" selected>0 min</option>
+              <option value="5">5 min</option>
+              <option value="15">15 min</option>
+              <option value="30">30 min</option>
+              <option value="60">1 hour</option>
+              <option value="custom">Custom</option>
+            </select>
+            <div class="custom-time-input" id="sleepSilentCustom" style="display:none;">
+              <input type="number" id="sleepSilentHours" min="0" max="23" placeholder="0" class="time-num-input"> h
+              <input type="number" id="sleepSilentCustomMinutes" min="0" max="59" placeholder="0" class="time-num-input"> m
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Start sleep timer</span>
+          <div class="pause-controls">
+            <span class="sleep-timer-status" id="sleepTimerStatus"></span>
+            <label class="toggle">
+              <input type="checkbox" id="sleepTimerEnabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="sleep-timer-hint">Volume fades to silent on YouTube tabs, then pauses the video when the silent period ends.</div>
+
         <div class="setting-section-title">Advanced</div>
 
         <div class="setting-row">
