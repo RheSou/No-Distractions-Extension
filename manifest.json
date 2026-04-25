@@ -34,6 +34,11 @@
       "css": ["content/youtube.css"],
       "js": ["content/youtube.js"],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/sleep-timer.js"],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
