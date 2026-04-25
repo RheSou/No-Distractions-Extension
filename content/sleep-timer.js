@@ -44,6 +44,12 @@ function tick() {
 
   const fadeMs = (parseInt(s.sleepFadeMinutes) || 0) * 60000;
   const silentMs = (parseInt(s.sleepSilentMinutes) || 0) * 60000;
+  if (fadeMs + silentMs <= 0) {
+    // Misconfigured timer — bail without touching playback.
+    chrome.storage.sync.set({ sleepTimerEnabled: false, sleepTimerStartedAt: 0 });
+    stopTimer();
+    return;
+  }
   const elapsed = Date.now() - s.sleepTimerStartedAt;
 
   if (elapsed < fadeMs) {
@@ -85,7 +91,12 @@ function stopTimer() {
 
 function refresh() {
   chrome.storage.sync.get(
-    ['sleepTimerEnabled', 'sleepTimerStartedAt', 'sleepFadeMinutes', 'sleepSilentMinutes'],
+    {
+      sleepTimerEnabled: false,
+      sleepTimerStartedAt: 0,
+      sleepFadeMinutes: 120,
+      sleepSilentMinutes: 0
+    },
     (s) => {
       cachedSettings = s;
       if (s.sleepTimerEnabled && s.sleepTimerStartedAt) {

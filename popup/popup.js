@@ -320,11 +320,21 @@ document.getElementById('sleepTimerEnabled').addEventListener('change', (e) => {
       e.target.checked = false;
       return;
     }
-    saveSetting('sleepTimerStartedAt', Date.now());
-    saveSetting('sleepTimerEnabled', true);
+    // Single atomic write so the content script sees all four keys at once.
+    // Persist the durations too — the in-memory defaults aren't written to
+    // storage unless the user changes the dropdowns.
+    const update = {
+      sleepFadeMinutes: fade,
+      sleepSilentMinutes: silent,
+      sleepTimerStartedAt: Date.now(),
+      sleepTimerEnabled: true
+    };
+    Object.assign(settings, update);
+    chrome.storage.sync.set(update);
   } else {
-    saveSetting('sleepTimerEnabled', false);
-    saveSetting('sleepTimerStartedAt', 0);
+    const update = { sleepTimerEnabled: false, sleepTimerStartedAt: 0 };
+    Object.assign(settings, update);
+    chrome.storage.sync.set(update);
   }
   updateSleepTimerStatus();
 });
