@@ -1,31 +1,106 @@
-// Tab-wide sleep timer — fades the volume of every <video> and <audio>
-// element on the page from the user's current level down to silent over a
-// configurable fade window, holds silent for an optional period, then pauses
-// playback. Works on any site (YouTube, Twitch, Kick, Netflix, etc.) because
-// streaming sites all play through HTML5 media elements.
+// Tab-wide sleep timer.
+//
+// Uses the Web Audio API (the same technique as volume-booster extensions)
+// to intercept audio from every <video> and <audio> element on the page and
+// route it through a GainNode. This gives true tab-level volume control —
+// the site can't override it because the audio is now leaving via our gain
+// stage, not the element's default output.
+//
+// As the timer counts down, the gain fades from 1.0 to 0.0 over the fade
+// window, holds at 0 for the silent window, then pauses every media
+// element on the page.
 
 let cachedSettings = null;
 let tickInterval = null;
 let activeSessionId = 0;
-let baseVolumes = new WeakMap();
+let audioCtx = null;
+const gainNodes = new WeakMap();        // HTMLMediaElement -> GainNode
+const wrappedElements = new WeakSet();  // elements we've already attempted to wrap
+
+function ensureAudioContext() {
+  if (audioCtx) return audioCtx;
+  try {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    audioCtx = new Ctor();
+  } catch (e) {
+    audioCtx = null;
+  }
+  return audioCtx;
+}
 
 function getMediaElements() {
   return document.querySelectorAll('video, audio');
 }
 
+// Lazily route a media element through a GainNode the first time we touch it.
+// createMediaElementSource can only be called once per element — if anything
+// else (the site itself, another extension) already wrapped it, this throws
+// and we fall back to el.volume.
+function getGain(el) {
+  if (gainNodes.has(el)) return gainNodes.get(el);
+  if (wrappedElements.has(el)) return null;
+  wrappedElements.add(el);
+
+  const ctx = ensureAudioContext();
+  if (!ctx) return null;
+
+  try {
+    const source = ctx.createMediaElementSource(el);
+    const gain = ctx.createGain();
+    gain.gain.value = 1;
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    gainNodes.set(el, gain);
+    return gain;
+  } catch (e) {
+    return null;
+  }
+}
+
 function applyFactor(factor) {
   const clamped = Math.max(0, Math.min(1, factor));
   for (const el of getMediaElements()) {
-    if (!baseVolumes.has(el)) {
-      // Capture the user's current volume the first time we see this element
-      // so the fade starts where they were rather than jumping to 100%.
-      baseVolumes.set(el, el.volume > 0 ? el.volume : 1);
+    const gain = getGain(el);
+    if (gain) {
+      // Smooth ramp avoids audible clicks when the value changes
+      try {
+        const ctx = audioCtx;
+        gain.gain.cancelScheduledValues(ctx.currentTime);
+        gain.gain.setTargetAtTime(clamped, ctx.currentTime, 0.05);
+      } catch (e) {
+        gain.gain.value = clamped;
+      }
+    } else {
+      // Fallback for elements we couldn't wrap (e.g., already wrapped, CORS).
+      try { el.volume = clamped; } catch (e) {}
+      if (clamped === 0) {
+        try { el.muted = true; } catch (e) {}
+      }
     }
-    const base = baseVolumes.get(el);
-    try {
-      el.volume = base * clamped;
-      if (clamped === 0) el.muted = true;
-    } catch (e) { /* some elements reject writes; ignore */ }
+  }
+
+  // Browser autoplay policy: AudioContext starts suspended until a user
+  // gesture. If media is already playing, the page already had a gesture
+  // and resume() succeeds.
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+}
+
+function restoreFullVolume() {
+  for (const el of getMediaElements()) {
+    const gain = gainNodes.get(el);
+    if (gain) {
+      try {
+        gain.gain.cancelScheduledValues(audioCtx.currentTime);
+        gain.gain.setTargetAtTime(1, audioCtx.currentTime, 0.05);
+      } catch (e) {
+        gain.gain.value = 1;
+      }
+    }
+    // Undo the .volume / .muted fallback path too
+    try { el.muted = false; } catch (e) {}
   }
 }
 
@@ -45,11 +120,11 @@ function tick() {
   const fadeMs = (parseInt(s.sleepFadeMinutes) || 0) * 60000;
   const silentMs = (parseInt(s.sleepSilentMinutes) || 0) * 60000;
   if (fadeMs + silentMs <= 0) {
-    // Misconfigured timer — bail without touching playback.
     chrome.storage.sync.set({ sleepTimerEnabled: false, sleepTimerStartedAt: 0 });
     stopTimer();
     return;
   }
+
   const elapsed = Date.now() - s.sleepTimerStartedAt;
 
   if (elapsed < fadeMs) {
@@ -68,16 +143,14 @@ function startTimer() {
   const s = cachedSettings;
   if (!s) return;
 
-  // New timer session — reset captured base volumes so we re-anchor on the
-  // current user volume.
   if (activeSessionId !== s.sleepTimerStartedAt) {
     activeSessionId = s.sleepTimerStartedAt;
-    baseVolumes = new WeakMap();
   }
 
   tick();
   if (!tickInterval) {
-    tickInterval = setInterval(tick, 1000);
+    // Tick frequently enough to feel like a smooth fade
+    tickInterval = setInterval(tick, 500);
   }
 }
 
@@ -87,6 +160,8 @@ function stopTimer() {
     tickInterval = null;
   }
   activeSessionId = 0;
+  // Hand audio back to the site at full volume
+  restoreFullVolume();
 }
 
 function refresh() {
